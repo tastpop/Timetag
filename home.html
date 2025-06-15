@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>หมวดหมู่สินค้า</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-bar {
+            margin: 15px 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 16px;
+        }
+
+        .search-input::placeholder {
+            color: #888;
+        }
+
+        .search-input:focus {
+            border-color: #ccc;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        }
+
+        .content {
+            flex: 1;
+            padding: 10px 20px;
+            overflow-y: auto;
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 80px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-color: #007AFF;
+        }
+
+        .category-item:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-right: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .category-description {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .category-arrow {
+            font-size: 18px;
+            color: #999;
+            transition: transform 0.3s ease;
+        }
+
+        .category-item:hover .category-arrow {
+            transform: translateX(5px);
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            margin: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            color: #007AFF;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .category-item {
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        .category-item:nth-child(1) { animation-delay: 0.1s; }
+        .category-item:nth-child(2) { animation-delay: 0.2s; }
+        .category-item:nth-child(3) { animation-delay: 0.3s; }
+        .category-item:nth-child(4) { animation-delay: 0.4s; }
+        .category-item:nth-child(5) { animation-delay: 0.5s; }
+        .category-item:nth-child(6) { animation-delay: 0.6s; }
+        .category-item:nth-child(7) { animation-delay: 0.7s; }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 16px;
+            display: none;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .app-container {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>หมวดหมู่สินค้า</h1>
+        </div>
+
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="ค้นหาหมวดหมู่..." id="searchInput">
+        </div>
+
+        <div class="content">
+            <div class="category-list" id="categoryList">
+                
+                <a href="meat.html" class="category-item" data-category="meat" data-name="เนื้อสัตว์">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
+                        🥩
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">เนื้อสัตว์</div>
+                        <div class="category-description">เนื้อวัว เนื้อหมู เนื้อไก่ ไข่ ปลา</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="water.html" class="category-item" data-category="drinks" data-name="เครื่องดื่มและนม">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
+                        🥛
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">เครื่องดื่มและนม</div>
+                        <div class="category-description">นม น้ำผลไม้ น้ำอัดลม กาแฟ</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="food.html" class="category-item" data-category="fruits" data-name="ผักและผลไม้">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #27ae60, #229954); color: white;">
+                        🍎
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">ผักและผลไม้</div>
+                        <div class="category-description">ผลไม้สด ผักใบเขียว ผักรากผักหัว</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="cake.html" class="category-item" data-category="snacks" data-name="ขนมหวาน">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">
+                        🍰
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">ขนมหวาน</div>
+                        <div class="category-description">เค้ก คุกกี้ ช็อกโกแลต ขนมขบเคี้ยว</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="makeup.html" class="category-item" data-category="cosmetics" data-name="เครื่องสำอาง">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #e91e63, #ad1457); color: white;">
+                        💄
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">เครื่องสำอาง</div>
+                        <div class="category-description">ครีมบำรุง โลชั่น ลิปสติก แป้ง</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="medicine.html" class="category-item" data-category="medicine" data-name="ยา">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white;">
+                        💊
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">ยา</div>
+                        <div class="category-description">ยาแก้ปวด ยาลดไข้ วิตามิน อาหารเสริม</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+                <a href="soap.html" class="category-item" data-category="cleaning" data-name="ผลิตภัณฑ์ทำความสะอาด">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #16a085, #138d75); color: white;">
+                        🧽
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">ผลิตภัณฑ์ทำความสะอาด</div>
+                        <div class="category-description">น้ำยาล้างจาน สบู่ แชมพู ครีมนวด</div>
+                    </div>
+                    <div class="category-arrow">›</div>
+                </a>
+
+            </div>
+
+            <div class="no-results" id="noResults">
+                ไม่พบหมวดหมู่ที่ตรงกับการค้นหา
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="home.html" class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">หน้าหลัก</div>
+            </a>
+            <a href="scan.html" class="nav-item">
+                <div class="nav-icon">📷</div>
+                <div class="nav-label">สแกน</div>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">ตั้งค่า</div>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const categories = document.querySelectorAll('.category-item');
+            const noResults = document.getElementById('noResults');
+            
+            let hasResults = false;
+            
+            categories.forEach(category => {
+                const name = category.getAttribute('data-name').toLowerCase();
+                const description = category.querySelector('.category-description').textContent.toLowerCase();
+                
+                if (searchTerm === '' || name.includes(searchTerm) || description.includes(searchTerm)) {
+                    category.style.display = 'flex';
+                    hasResults = true;
+                } else {
+                    category.style.display = 'none';
+                }
+            });
+            
+            if (!hasResults && searchTerm !== '') {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.nav-item').forEach((item) => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

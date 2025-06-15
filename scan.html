@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>สแกนขนมหวาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background-color: #000;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .camera-view {
+            flex: 1;
+            background-color: #000;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scan-frame {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #fff;
+        }
+
+        .corner.top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+        }
+
+        .corner.top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            border-top-right-radius: 8px;
+        }
+
+        .corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            border-bottom-left-radius: 8px;
+        }
+
+        .corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 8px;
+        }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: scanning 2s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes scanning {
+            0% {
+                top: 20%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                top: 80%;
+                opacity: 0;
+            }
+        }
+
+        .instruction-text {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .shutter-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .shutter-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: transparent;
+            border: 4px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .shutter-button:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .shutter-button:active {
+            transform: scale(0.9);
+        }
+
+        .shutter-button::before {
+            content: '';
+            width: 58px;
+            height: 58px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .gallery-button, .flash-button {
+            display: none;
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            color: #ff6b9d;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .back-icon {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .app-container {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .scan-frame {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="camera-view">
+            <a href="home.html" class="back-button">
+                <span class="back-icon">←</span>
+            </a>
+            
+            <div class="scan-frame">
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+                <div class="scan-line"></div>
+            </div>
+
+            <div class="instruction-text">
+                วางสินค้าในกรอบ<br>เพื่อสแกนวันหมดอายุ
+            </div>
+
+            <div class="shutter-container">
+                <a href="scan1.html" class="shutter-button" onclick="capturePhoto(event)">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function capturePhoto(event) {
+            const flashEffect = document.createElement('div');
+            flashEffect.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: white;
+                z-index: 9999;
+                opacity: 0.8;
+                pointer-events: none;
+            `;
+            document.body.appendChild(flashEffect);
+            
+            console.log('📸 ถ่ายรูปแล้ว!');
+            
+            setTimeout(() => {
+                document.body.removeChild(flashEffect);
+            }, 150);
+        }
+
+        window.addEventListener('load', () => {
+            console.log('📷 กล้องพร้อมใช้งาน');
+        });
+    </script>
+</body>
+</html>

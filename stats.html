@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>สถิติ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .most-expired {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            gap: 15px;
+        }
+
+        .most-expired-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .most-expired-info h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .most-expired-info h2 {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .chart-section {
+            text-align: center;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 25px;
+        }
+
+        .pie-chart {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #e74c3c 0deg 131.4deg,
+                #3498db 131.4deg 217.12deg,
+                #ffdd00 217.12deg 257.11deg,
+                #27ae60 257.11deg 291.43deg,
+                #9b59b6 291.43deg 320.06deg,
+                #e67e22 320.06deg 342.9deg,
+                #34495e 342.9deg 360deg
+            );
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-center {
+            width: 120px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-icon {
+            font-size: 32px;
+            color: #666;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .legend-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .legend-percentage {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .share-btn {
+            margin-top: auto;
+            margin-bottom: 80px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            margin: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            color: #007AFF;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .app-container {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>สถิติ</h1>
+        </div>
+
+        <div class="content">
+            <div class="most-expired">
+                <div class="most-expired-icon">🍰</div>
+                <div class="most-expired-info">
+                    <h3>หมดอายุมากที่สุด</h3>
+                    <h2>ขนมหวาน</h2>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <h3 class="chart-title">รายวัน</h3>
+                <div class="chart-container">
+                    <div class="pie-chart">
+                        <div class="chart-center">
+                            <div class="chart-icon">📊</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #e74c3c;"></div>
+                            <span class="legend-text">ขนมหวาน</span>
+                        </div>
+                        <span class="legend-percentage">36.51%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #3498db;"></div>
+                            <span class="legend-text">ผักผลไม้</span>
+                        </div>
+                        <span class="legend-percentage">23.81%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #ffdd00;"></div>
+                            <span class="legend-text">ยา</span>
+                        </div>
+                        <span class="legend-percentage">11.11%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #27ae60;"></div>
+                            <span class="legend-text">เครื่องดื่ม</span>
+                        </div>
+                        <span class="legend-percentage">9.52%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #9b59b6;"></div>
+                            <span class="legend-text">เนื้อ</span>
+                        </div>
+                        <span class="legend-percentage">7.94%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #e67e22;"></div>
+                            <span class="legend-text">เครื่องสำอาง</span>
+                        </div>
+                        <span class="legend-percentage">6.35%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background-color: #34495e;"></div>
+                            <span class="legend-text">ผลิตภัณฑ์ทำความสะอาด</span>
+                        </div>
+                        <span class="legend-percentage">4.76%</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="stats1.html" class="share-btn">แชร์รายการ</a>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">หน้าหลัก</div>
+            </a>
+            <a href="scan.html" class="nav-item">
+                <div class="nav-icon">📷</div>
+                <div class="nav-label">สแกน</div>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">ตั้งค่า</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เครื่องดื่ม</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-bar {
+            margin: 15px 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 16px;
+        }
+
+        .search-input::placeholder {
+            color: #888;
+        }
+
+        .search-input:focus {
+            border-color: #ccc;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        }
+
+        .content {
+            flex: 1;
+            padding: 10px 20px;
+            overflow-y: auto;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 80px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            border-left: 5px solid transparent;
+        }
+
+        .expired {
+            border-left-color: #e74c3c;
+            background: linear-gradient(90deg, #fdf2f2 0%, #fff 20%);
+        }
+
+        .expiring-soon {
+            border-left-color: #f39c12;
+            background: linear-gradient(90deg, #fef9f0 0%, #fff 20%);
+        }
+
+        .fresh {
+            border-left-color: #27ae60;
+            background: linear-gradient(90deg, #f0f9f4 0%, #fff 20%);
+        }
+
+        .status-dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .expired .status-dot {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .expiring-soon .status-dot {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .fresh .status-dot {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .item-icon {
+            font-size: 28px;
+        }
+
+        .item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expiry-info {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .expired .expiry-info {
+            color: #e74c3c;
+        }
+
+        .expiring-soon .expiry-info {
+            color: #f39c12;
+        }
+
+        .fresh .expiry-info {
+            color: #27ae60;
+        }
+
+        .item-count {
+            font-size: 12px;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .menu-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffc107;
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            margin: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            color: #007AFF;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .app-container {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>เครื่องดื่ม</h1>
+        </div>
+
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="ค้นหาเครื่องดื่ม..." id="searchInput">
+        </div>
+
+        <div class="content">
+            <div class="item-list">
+
+                <div class="item-row expired">
+                    <div class="status-dot">
+                        <span class="item-icon">🥛</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">นมสด</div>
+                        <div class="item-details">
+                            <div class="expiry-info">หมดอายุแล้ว 3 วัน</div>
+                            <div class="item-count">2 กล่อง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row expired">
+                    <div class="status-dot">
+                        <span class="item-icon">🧃</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">น้ำส้ม</div>
+                        <div class="item-details">
+                            <div class="expiry-info">หมดอายุแล้ว 1 วัน</div>
+                            <div class="item-count">4 กล่อง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row expiring-soon">
+                    <div class="status-dot">
+                        <span class="item-icon">🥤</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">โค้ก</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 2 วัน</div>
+                            <div class="item-count">6 กระป๋อง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row expiring-soon">
+                    <div class="status-dot">
+                        <span class="item-icon">☕</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">กาแฟเย็น</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 1 วัน</div>
+                            <div class="item-count">3 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row expiring-soon">
+                    <div class="status-dot">
+                        <span class="item-icon">🍺</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">เบียร์</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 3 วัน</div>
+                            <div class="item-count">12 กระป๋อง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🧋</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">ชาไทย</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 7 วัน</div>
+                            <div class="item-count">5 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🥥</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">น้ำมะพร้าว</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 10 วัน</div>
+                            <div class="item-count">8 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🍷</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">ไวน์แดง</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 15 วัน</div>
+                            <div class="item-count">2 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🍵</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">ชาเขียวญี่ปุ่น</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 12 วัน</div>
+                            <div class="item-count">6 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🥃</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">วิสกี้</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 365 วัน</div>
+                            <div class="item-count">1 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🧊</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">น้ำแข็ง</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 30 วัน</div>
+                            <div class="item-count">5 ถุง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🍼</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">น้ำดื่ม</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 45 วัน</div>
+                            <div class="item-count">24 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-row fresh">
+                    <div class="status-dot">
+                        <span class="item-icon">🍹</span>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">น้ำหวาน</div>
+                        <div class="item-details">
+                            <div class="expiry-info">เหลืออีก 8 วัน</div>
+                            <div class="item-count">10 ขวด</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-bar">MENU</div>
+
+        <div class="bottom-nav">
+            <a href="home.html" class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">หน้าหลัก</div>
+            </a>
+            <a href="scan.html" class="nav-item">
+                <div class="nav-icon">📷</div>
+                <div class="nav-label">สแกน</div>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">ตั้งค่า</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.item-row');
+            
+            items.forEach(item => {
+                const itemName = item.querySelector('.item-name').textContent.toLowerCase();
+                
+                if (searchTerm === '' || itemName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

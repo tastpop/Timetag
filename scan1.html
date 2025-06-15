@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เพิ่ม/แก้ไขผักผลไม้</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .app-container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 100px;
+        }
+
+        .pepper-container {
+            width: 200px;
+            height: 150px;
+            background: #F5F5DC;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pepper-icon {
+            font-size: 80px;
+            user-select: none;
+        }
+
+        .item-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-section {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .date-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .date-group {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .date-group:first-child {
+            margin-left: 0;
+        }
+
+        .date-group:last-child {
+            margin-right: 0;
+        }
+
+        .date-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            border-color: #007AFF;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 122, 255, 0.1);
+        }
+
+        .quantity-section {
+            margin: 30px 0;
+        }
+
+        .quantity-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .quantity-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #007AFF;
+            background-color: #007AFF;
+            color: white;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quantity-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .cancel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            margin: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            color: #007AFF;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .app-container {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+
+        .delete-option {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .delete-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="content">
+            <div class="pepper-container">
+                <div class="pepper-icon">🌶️</div>
+            </div>
+            
+            <a href="home.html" class="delete-option" title="ลบรายการ">🗑️</a>
+
+            <div class="item-title">พริกจะหมดอายุในอีก 5 วัน</div>
+
+            <div class="form-section">
+                <div class="date-row">
+                    <div class="date-group">
+                        <label class="date-label">วันที่ซื้อสินค้า</label>
+                        <input type="date" class="date-input" value="2023-04-10" id="purchaseDate">
+                    </div>
+                    <div class="date-group">
+                        <label class="date-label">วันที่หมดอายุ</label>
+                        <input type="date" class="date-input" value="2023-04-15" id="expiryDate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="quantity-section">
+                <div class="quantity-label">แพ็ค</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+                    <div class="quantity-display" id="quantityDisplay">1</div>
+                    <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="home.html" class="action-btn cancel-btn">ยกเลิก</a>
+                <a href="home.html" class="action-btn confirm-btn">ยืนยัน</a>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="home.html" class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">หน้าหลัก</div>
+            </a>
+            <a href="scan.html" class="nav-item">
+                <div class="nav-icon">📷</div>
+                <div class="nav-label">สแกน</div>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-label">ตั้งค่า</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let quantity = 1;
+
+        function increaseQuantity() {
+            quantity++;
+            document.getElementById('quantityDisplay').textContent = quantity;
+            updateQuantityAnimation();
+        }
+
+        function decreaseQuantity() {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('quantityDisplay').textContent = quantity;
+                updateQuantityAnimation();
+            }
+        }
+
+        function updateQuantityAnimation() {
+            const display = document.getElementById('quantityDisplay');
+            display.style.transform = 'scale(1.2)';
+            display.style.color = '#007AFF';
+            
+            setTimeout(() => {
+                display.style.transform = 'scale(1)';
+                display.style.color = '#333';
+            }, 200);
+        }
+
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
